@@ -1,0 +1,9 @@
+# UService:: created directory log_20250221_141203.877/
+# UService:: no logging at start
+# UMqtt:: connection to MQTT broker on tcp://localhost:1883 established
+# UMqttIn:: connection to MQTT broker on tcp://localhost:1883 established
+# STeensy:: opening to USB /dev/ttyACM0
+# STeensy:: just connected 
+# UService:: setup of Teensy 0 modules finished OK.
+# SRobot:: (t0) found IP 0: wlan0 10.197.218.78
+# STeensy[0]:: time glitch of 1872.726 sec, 13.3 secs after app start, maybe an NTP update

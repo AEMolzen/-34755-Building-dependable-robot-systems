@@ -1,0 +1,22 @@
+% IP display service Teensy
+% Version  918 2025-01-20 13:21:16
+% 1 	Time (sec) from system
+% 2 	Number of users on Linux system
+% 3 	CPU temperature (deg C)
+% 4 	% (to help import to Matlab)
+% 5 	Message string (possibly more lines)
+1740143523.5570 0 0.0 % 2025-02-21T14:12:03 CET
+
+1740143523.6651 0 31.6 % Teensy available
+1740143524.6683 0 31.6 % IP updated to Teensy display, stopping connection to Teensy
+1740143527.7515 0 31.6 % Teensy occupied (fine)
+1740143527.7731 0 31.6 %  14:12:07 up 0 min,  1 user,  load average: 2,55, 0,56, 0,18
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+local             -                14:12    6.00s 11.55s  0.32s /usr/bin/labwc -m
+
+1740143530.7736 1 31.6 %  10.197.218.78
+1740143530.9523 1 31.6 %  14:12:10 up 0 min,  2 users,  load average: 2,43, 0,56, 0,19
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+local             -                14:12    9.00s 13.95s  0.74s /usr/bin/labwc -m
+local    tty1     -                14:12   11.00s  0.08s  0.06s -bash
+
