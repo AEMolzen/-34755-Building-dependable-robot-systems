@@ -189,6 +189,7 @@ void MVelocity::run()
         snprintf(s, MSL, "%.3f %.3f\n",
                 motorVel[0], motorVel[1]);
         UTime t("now");
+        // topic robobot/drive/T0/mvel
         mqtt.publish(topicVel.c_str(), s, t);
       }
       toLog();

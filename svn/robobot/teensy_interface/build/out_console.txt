@@ -1,9 +1,34 @@
-# UService:: created directory log_20250221_141203.877/
+# UService:: created directory log_20250314_151705.765/
 # UService:: no logging at start
-# UMqtt:: connection to MQTT broker on tcp://localhost:1883 established
+# UMqtt:: disabled in robot.ini
 # UMqttIn:: connection to MQTT broker on tcp://localhost:1883 established
 # STeensy:: opening to USB /dev/ttyACM0
 # STeensy:: just connected 
-# UService:: setup of Teensy 0 modules finished OK.
+# UService:: Teensy 0 setup: resend 23 (OK), dumped 0 messages (dumped should be 0)
 # SRobot:: (t0) found IP 0: wlan0 10.197.218.78
-# STeensy[0]:: time glitch of 1872.726 sec, 13.3 secs after app start, maybe an NTP update
+# STeensy[0]:: time glitch of 1659.656 sec, 18.9 secs after app start, maybe an NTP update
+# MQTT decode:: (err=0) new master '2025-03-14 15:45:50.716443'
+# Started logging
+# UService::mqttDecode: got 'robobot/cmd/T0/lip' '1', send (queued) to T0 as 'lip 1
+'# UService::mqttDecode: got 'robobot/cmd/T0/leds' '16 30 30 0', send (queued) to T0 as 'leds 16 30 30 0
+'# UService::mqttDecode: got 'robobot/cmd/T0/leds' '16 0 0 0', send (queued) to T0 as 'leds 16 0 0 0
+'# CMixer::setVelocity: vel=0.000 (m/s), turnrate=0.000 (rad/sec)
+# UService::mqttDecode: got 'robobot/cmd/T0/stop' ' ', send (queued) to T0 as 'stop  
+'# UService::mqttDecode: got 'robobot/cmd/T0/leds' '14 0 0 0', send (queued) to T0 as 'leds 14 0 0 0
+'# UService::mqttDecode: got 'robobot/cmd/T0/leds' '15 0 0 0', send (queued) to T0 as 'leds 15 0 0 0
+'# UService::mqttDecode: got 'robobot/cmd/T0/leds' '16 0 0 0', send (queued) to T0 as 'leds 16 0 0 0
+'# Flush of logfiles to disk took 0.000244 sec
+# UService::run: master lost (2025-03-14 15:45:50.716443), no alive in 4.04 sec
+# UService:: should probably stop the robot, but ignored for now.
+# STeensy[0]:: time glitch of 2.826 sec, 705.975 secs after app start, maybe an NTP update
+# MQTT decode:: (err=0) new master '2025-03-14 15:58:40.995102'
+# Started logging
+# UService::mqttDecode: got 'robobot/cmd/T0/lip' '1', send (queued) to T0 as 'lip 1
+'# UService::mqttDecode: got 'robobot/cmd/T0/leds' '16 30 30 0', send (queued) to T0 as 'leds 16 30 30 0
+'# UService::mqttDecode: got 'robobot/cmd/T0/leds' '16 0 0 0', send (queued) to T0 as 'leds 16 0 0 0
+'# CMixer::setVelocity: vel=0.000 (m/s), turnrate=0.000 (rad/sec)
+# UService::mqttDecode: got 'robobot/cmd/T0/stop' ' ', send (queued) to T0 as 'stop  
+'# UService::mqttDecode: got 'robobot/cmd/T0/leds' '14 0 0 0', send (queued) to T0 as 'leds 14 0 0 0
+'# UService::mqttDecode: got 'robobot/cmd/T0/leds' '15 0 0 0', send (queued) to T0 as 'leds 15 0 0 0
+'# UService::mqttDecode: got 'robobot/cmd/T0/leds' '16 0 0 0', send (queued) to T0 as 'leds 16 0 0 0
+'

@@ -55,6 +55,19 @@ class SImu:
           break
         pass
         loops += 1
+      # should we calibrate the gyro
+      if service.args.gyro:
+        print("% Starting calibrate gyro offset.")
+        # ask Teensy to calibrate
+        service.send("robobot/cmd/T0/gyroc", "")
+        # wait for calibration to finish (average over 1s)
+        t.sleep(2.5)
+        # save calibrated values
+        service.send("robobot/cmd/T0/eew", "")
+        print("% Starting calibrate gyro offset finished.")
+        t.sleep(0.5)
+        # all done
+        service.stop = True
       pass
 
     def print(self):
@@ -73,7 +86,7 @@ class SImu:
     def decode(self, topic, msg):
         # decode MQTT message
         used = True
-        if topic == "T0/gyro2":
+        if topic == "T0/gyro":
           gg = msg.split(" ")
           if (len(gg) >= 4):
             t0 = self.gyroTime;
@@ -88,7 +101,7 @@ class SImu:
               self.gyroInterval = (self.gyroInterval * 99 + (t1 -t0).total_seconds()) / 100
             self.gyroUpdCnt += 1
             # self.print()
-        elif topic == "T0/acc2":
+        elif topic == "T0/acc":
           gg = msg.split(" ")
           if (len(gg) >= 4):
             t0 = self.accTime;

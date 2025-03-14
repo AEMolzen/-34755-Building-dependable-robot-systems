@@ -119,15 +119,12 @@ bool SEncoder::decode(const char* msg, UTime & msgTime)
       p1 += 4;
     else
       return false;
-    const char * p2 = p1;
     encTime = msgTime;
     /*double teensyTime =*/ strtod(p1, (char**)&p1);
     enc[0] = strtoll(p1, (char**)&p1, 10);
     enc[1] = strtoll(p1, (char**)&p1, 10);
     // notify users of a new update
     updatePosCnt++;
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish(topicEnc.c_str(), p2, msgTime);
     // save to log_encoder_pose
     logTime = msgTime;
     toLogEnc();
@@ -141,15 +138,12 @@ bool SEncoder::decode(const char* msg, UTime & msgTime)
       p1 += 4;
     else
       return false;
-    const char * p2 = p1;
     encVelTime = msgTime;
     /*double teensyTime =*/ strtod(p1, (char**)&p1);
     vel[0] = strtof(p1, (char**)&p1);
     vel[1] = strtof(p1, (char**)&p1);
     // notify users of a new update
     updateVelCnt++;
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish(topicEncVel.c_str(), p2, msgTime);
     // logged in the velocity module
     // after potential additional gear
   }
@@ -159,15 +153,12 @@ bool SEncoder::decode(const char* msg, UTime & msgTime)
       p1 += 5;
     else
       return false;
-    const char * p2 = p1;
     poseTime = msgTime;
     /*double teensyTime =*/ strtod(p1, (char**)&p1);
     for (int i = 0; i < 4; i++)
       pose[i] = strtof(p1, (char**)&p1);
     // notify users of a new update
     updatePoseCnt++;
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish(topicPose.c_str(), p2, msgTime);
     // save to log_encoder_pose
     logTime = msgTime;
     toLogPose();

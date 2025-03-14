@@ -66,7 +66,12 @@ bool UDemo_Behave::tick()
   // buffer for debug messages
   const int MSL = 200; // max string buffer length
   char s[MSL]; // 200 chars max
-  //
+  // robot.missionStart = true;
+  if(ls.linfollowON){
+    robot.missionStart = true;
+  } else {
+    robot.missionStart = false;
+  }
   // this is a state machine
   // state 0: wait for start button press
   // other states are part of a sequence
@@ -76,14 +81,14 @@ bool UDemo_Behave::tick()
       if (buttonReleased() or robot.missionStart)
       { // starting a sequence
         // make communication easy
-        usb.use_CRC = false;
+        usb.use_CRC = true;
         robot.missionStart = false;
         // inform USB master
         usb.send("%% starting\n");
         // reset position and trip counters
         encoder.clearPose();
         // controller params
-        lead.setup(0.8, 0.15, service.sampleTime_sec());
+        lead.setup(0.8/2, 0.15/2, service.sampleTime_sec());
         // log every 2 ms
         logger.startLogging(2, true);
         ls.lineSensorOn = true;
@@ -137,22 +142,23 @@ bool UDemo_Behave::tick()
         { // set to follow line
           state = 14;
           encoder.tripBreset();
-          endTime = 10.0;
+          endTime = 40.0;                       //Changed by Jonas 14.03.: endTime = 10.0;
           usb.send("%% following line\n");
         }
       }
       break;
     case 14:
       // let line determine motor voltage
-      followLine(0);
+      followLine(-1);
       // end if line is lost (line not valid more than 10 times)
-      if (encoder.tripBtime > endTime or ls.lineValidCnt < 5)
+      if (encoder.tripBtime > endTime or buttonReleased()) //changed by Jonas 14.03.  if (encoder.tripBtime > endTime or ls.lineValidCnt < 5)
       {
         motor.setMotorVoltage(0, 0);
         state = 90;
         snprintf(s, MSL, "%% followed line in %f sec\n", encoder.tripBtime);
         usb.send(s);
       }
+
       break;
     case 90:
       // test if this state is finished and robot is stopped
@@ -166,6 +172,7 @@ bool UDemo_Behave::tick()
       // back to start
       state = 0;
       // or terminate
+      ls.linfollowON = false;
       theEnd = true;
       break;
   }
@@ -188,7 +195,19 @@ bool UDemo_Behave::tick()
 void UDemo_Behave::followLine(float pos)
 {
   float e, u;
-  const float kp = 0.5;
+  const float kp = 0.5;   //1.5 was very good for lines without intersections/ lines splitting up (less osciallation)
+
+
+  /* if (ls.reflectAverage > 1.05)
+  { 
+    for (int helpvar=0; helpvar<100; helpvar++)
+    {
+      motor.setMotorVoltage(1, 3);
+    }
+  }
+
+  else */
+  
   if (ls.lineValid)
   { // line position is a value from
     // about -2 (robot too far right) to +2 (too far left)
@@ -202,7 +221,12 @@ void UDemo_Behave::followLine(float pos)
     // robot is too far to the right (line negative),
     // left should decrease and right increase
     motor.setMotorVoltage(avgv - u, avgv + u);
-  }
+  } 
+
+  //ls.lineValidCnt < 5
+
+
+
 }
 
 ///////////////////////////////////////////////////////////

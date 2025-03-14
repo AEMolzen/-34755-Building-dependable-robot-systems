@@ -71,7 +71,6 @@ public:
 
 private:
   void calculateForce();
-  void mqttPublish();
 
   std::string ini_section;
   void toLogDist();

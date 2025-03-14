@@ -190,15 +190,11 @@ bool CMotor::decode(const char* msg, UTime & msgTime)
   if (strncmp(p1, "mot ", 4) == 0)
   {
     p1 += 4;
-    const char * p2 = p1;
 //     motvTime = msgTime;
     for (int i = 0; i < SRobot::MAX_MOTORS; i++)
       motorVoltage[i] = strtof(p1, (char**)&p1);
     // save to log_encoder_pose
     toLogMv(msgTime);
-    // also publist as MQTT message
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish(topicMotv.c_str(), p2, msgTime);
   }
   else if (strncmp(p1, "motpwm ", 7) == 0)
   { /* From umotor.cpp (Teensy code)
@@ -280,20 +276,21 @@ void CMotor::run()
         snprintf(s, MSL, "motv %.2f %.2f\n", u[0], u[1]);
         t.now();
         teensy[tn].send(s, true);
-        if (mixer.areWheelsRunning())
-        { // we are driving (or should)
-          relaxTime.now();
-        }
-        else if (relaxTime.getTimePassed() > timeToRelax)
-        { // velocities are commanded zero for some seconds
-          // stop controlling the wheels (allow motor controller relax)
-          relax = true;
-          relaxing = 0;
-        }
+        // if (mixer.shouldWheelsBeRunning())
+        // { // we are driving (or should)
+        //   relaxTime.now();
+        // }
+        // else if (relaxTime.getTimePassed() > timeToRelax)
+        // { // velocities are commanded zero for some seconds
+        //   // stop controlling the wheels (allow motor controller relax)
+        //   relax = true;
+        //   relaxing = 0;
+        // }
+        relaxing = 0;
       }
       else
       { // relax motor loop
-        if (relaxing < 5)
+        if (relaxing < 3)
         { // send relax values
           for (int i = 0; i < SRobot::MAX_MOTORS; i++)
           { // clear PID controller

@@ -58,10 +58,14 @@ protected:
   bool useTeensyVelEstimate;
 
 public:
+  bool areMotorsRunning()
+  { // are motor running, in rad/s for motor before gear
+    return fabsf(motorVel[0] > 0.2) or fabsf(motorVel[1] > 0.1);
+  }
   /// PC time of last update
   UTime velTime;
   float sampleTime;
-  //  Calculated wheel velocity
+  //  Calculated motor velocity (rad/s on motor side)
   float motorVel[SRobot::MAX_MOTORS] = {0.0};
   // new pose is calculated count
   int updateCnt = 0;

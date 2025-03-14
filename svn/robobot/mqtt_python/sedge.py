@@ -65,9 +65,10 @@ class SEdge:
     # follow line controller
     lineCtrl = False # private
     # try with a P-Lead controller
-    lineKp = 3.0
-    lineTauZ = 0.8
-    lineTauP = 0.15
+    lineKp = 80.5/50 #lineKp = 40.0  #lineKp = 3.0
+    
+    lineTauZ = 0.6*20 #lineTauZ = 0.3 #0.8
+    lineTauP = 0.9*200 #lineTauP = 0.09  #0.15
     # Lead pre-calculated factors
     tauP2pT = 1.0
     tauP2mT = 0.0
@@ -240,6 +241,9 @@ class SEdge:
             # debug save as a remark with timestamp
             # flog.writeDataString(f" {msg}");
             self.LineDetect()
+            
+            #print(self.edge)
+            
             # use to control, if active
             if self.lineCtrl:
               self.followLine()
@@ -421,7 +425,7 @@ class SEdge:
       cv.putText(img, "White (1000)", (int(st),pl - gh - 2), cv.FONT_HERSHEY_PLAIN, 1, dtuPurple, thickness=2)
       if self.crossingLine:
         cv.putText(img, "Crossing", (int(st),int(pl - 20)), cv.FONT_HERSHEY_PLAIN, 1, dtuRed, thickness=2)
-
+        
 
 # create the data object
 edge = SEdge()

@@ -133,9 +133,9 @@ bool SDistForce::decode(const char* msg, UTime & msgTime)
     /*double teensyTime = strtod(p1, (char**)&p1); */
     distance[0] = strtof(p1, (char**)&p1);
     distance[1] = strtof(p1, (char**)&p1);
-    forceAD[0] = strtoll(p1, (char**)&p1, 10);
-    forceAD[1] = strtoll(p1, (char**)&p1, 10);
-    sensorOn = strtoll(p1, (char**)&p1, 10);
+    // forceAD[0] = strtoll(p1, (char**)&p1, 10);
+    // forceAD[1] = strtoll(p1, (char**)&p1, 10);
+    // sensorOn = strtoll(p1, (char**)&p1, 10);
     //
     if (ini[ini_section]["force"] == "true")
       calculateForce();
@@ -145,30 +145,10 @@ bool SDistForce::decode(const char* msg, UTime & msgTime)
     logTime = updTime;
     toLogDist();
     toLogForce();
-    mqttPublish();
   }
   else
     used = false;
   return used;
-}
-
-void SDistForce::mqttPublish()
-{
-  if (ini["mqtt"]["use"] == "true")
-  { // publist IR distance
-    const int MSL = 100;
-    char s[MSL];
-    if (ini[ini_section]["force"] == "true")
-    { // is a force sensor (RP-C18.3-LT from DFROBOT)
-      snprintf(s, MSL, "%.3f %.3f %d %d\n", force[0], force[1], forceAD[0], forceAD[1]);
-      mqtt.publish(topicDist.c_str(), s, updTime);
-    }
-    else
-    { // is a distance sensor (Sharp 2Y0A21)
-      snprintf(s, MSL, "%.3f %.3f\n", distance[0], distance[1]);
-      mqtt.publish(topicDist.c_str(), s, updTime);
-    }
-  }
 }
 
 

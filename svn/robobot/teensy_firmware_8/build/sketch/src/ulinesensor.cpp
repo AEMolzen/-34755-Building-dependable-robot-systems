@@ -112,6 +112,14 @@ bool ULineSensor::decode(const char* buf)
     //   }
     // }
   } 
+  else if (strncmp(buf, "linfON", 6) == 0)
+  { 
+    linfollowON = true;
+  } 
+  else if (strncmp(buf, "linfOFF", 7) == 0)
+  { 
+    linfollowON = false;
+  } 
   else if (strncmp(buf, "litb ", 5) == 0 and strlen(buf) > 19)
   { // calibrate black from provided values
     const char * p1 = &buf[5];
@@ -418,10 +426,29 @@ void ULineSensor::sendStatusLineSensor(bool normalized)
              int(lineSensorValueSum[2]/n * 1000),
              int(lineSensorValueSum[3]/n * 1000),
              int(lineSensorValueSum[4]/n * 1000),
-             int(lineSensorValueSum[5]/n * 1000),
+             int(lineSensorValueSum[5]/n * 1000),     //original! Jonas 11.03.
              int(lineSensorValueSum[6]/n * 1000),
              int(lineSensorValueSum[7]/n * 1000), n
     );
+
+
+
+      /*snprintf(reply, MRL, "livf %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %d\r\n" ,
+             lineSensorValue[0],
+             lineSensorValue[1],
+             lineSensorValue[3],
+             lineSensorValue[4],
+             lineSensorValue[5],
+             lineSensorValue[6],
+             lineSensorValue[7],
+             reflectAverage, n
+    );*/
+
+    
+
+
+
+
   }
   else
   { // raw value from AD converter, but averaged since last sample

@@ -1,0 +1,21 @@
+% logfile for Python side
+% 1 time (sec)
+% 2 Mission state
+% 3,4,5 (x,y,h) (m,m,rad)
+% 6 Camera frame count
+% 7 Line sensor line position
+% 8,9 trip A (distance and heading change)
+% 10,11 trip B (distance and heading change)
+% 1741963550.7401223 robobot/cmd/ti/alive 2025-03-14 15:45:50.716443
+% 1741963550.7433486 robobot/cmd/ti/log 1
+% 1741963551.2410238 robobot/cmd/ti/alive 2025-03-14 15:45:50.716443
+% 1741963551.7429595 robobot/cmd/ti/alive 2025-03-14 15:45:50.716443
+% 1741963551.9133368 robobot/cmd/T0/lip 1
+% 1741963551.9142168 robobot/cmd/T0/leds 16 30 30 0
+% 1741963551.9149542 robobot/cmd/T0/leds 16 0 0 0
+% 1741963551.9155347 robobot/cmd/ti/rc 0 0
+% 1741963551.9669712 robobot/cmd/T0/stop  
+% 1741963551.9677303 robobot/cmd/T0/leds 14 0 0 0
+% 1741963551.9786081 robobot/cmd/T0/leds 15 0 0 0
+% 1741963551.979067 robobot/cmd/T0/leds 16 0 0 0
+% 1741963551.9900422 robobot/cmd/ti/log 0

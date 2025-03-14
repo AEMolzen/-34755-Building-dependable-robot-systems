@@ -81,6 +81,8 @@ public:
   int16_t blackLevel[8] = {0};
   float lsGain[8] = {0.0};
   bool detect[8] = {false};
+
+  bool linfollowON = false;
   /**
    * next 2 probably not relevant */
   //float findCrossingLineVal;

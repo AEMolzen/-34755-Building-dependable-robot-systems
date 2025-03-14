@@ -92,7 +92,7 @@ def loop():
     
     while not (service.stop or gpio.stop()):
         if state == 0:
-            start = gpio.start() or service.args.now
+            start = 1#start = gpio.start() or service.args.now
             if start:
                 print("% Starting")
                 service.send(service.topicCmd + "T0/leds", "16 0 0 30")
@@ -110,7 +110,7 @@ def loop():
             state = 2
         
         elif state == 2:
-            edge.lineControl(0.5, 0)
+            edge.lineControl(0.2, 0)
             if pose.tripBtimePassed() > 5: 
                 break
             

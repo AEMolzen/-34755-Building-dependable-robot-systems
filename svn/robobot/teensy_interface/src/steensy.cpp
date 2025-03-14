@@ -791,10 +791,8 @@ bool STeensy::decode(const char * msg, UTime & msgTime)
     {
       ini[ini_section]["name"] = ++p1;
     }
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish(topicDName.c_str(), p1, msgTime);
   }
-  else if (msg[0] == '#')
+  if (msg[0] == '#')
   { // service message - just ignored
 //     printf("# UTeensy:: service message from Teensy: %s", msg);
     mqtt.publish(topicHelp.c_str(), msg, msgTime);

@@ -89,29 +89,46 @@ def loop():
   ledon = True  # Initialize LED state
   tripTime = datetime.now()  # Initialize tripTime with current time
   oldstate = -1  # Initialize oldstate
+  
+  ###service.send("robobot/cmd/T0/servo", "1 5000 200")
+
+  
+  toggle = 0
+
+  # Set up GPIO pins
+  
   if not service.args.now:
     print("% Ready, press start button")
     service.send(service.topicCmd + "T0/leds","16 30 30 0")  # Set LED to yellow (waiting)
   # Main state machine
-  edge.lineControl(0, 0)  # Make sure line control is off
+  #edge.lineControl(0, 0)  # Make sure line control is off
   while not (service.stop or gpio.stop()):  # Main loop
     if state == 0:  # Wait for start signal
-      start = gpio.start() or service.args.now
+      #start = gpio.start() or service.args.now
+      start = 1
+      print(start)
+      print("% Starting trying")
       if start:
         print("% Starting")
         
         service.send(service.topicCmd + "T0/leds","16 0 0 30")  # Set LED to blue (running)
         #service.send(service.topicCmd + "ti/rc","0.5 0")  # Set robot speed and turn rate
-        #edge.lineControl(0.25, 0.0)  # Follow line at 0.25 m/s
+        #edge.lineControl(0.25, 0)  # Follow line at 0.25 m/s
+        print("% trying Linefollow on teensy")
+        service.send(service.topicCmd + "T0/linfON", " ")
+        print("% Starting Linefollow on teensy")
         state = 12  # Change state to following line
         pose.tripBreset()  # Reset trip counter/timer B
     elif state == 12:  # Following line
-      if pose.tripBtimePassed() > 5:
+      if pose.tripBtimePassed() > 3:
         #pose.printPose()
         # No more line
         #edge.lineControl(0,0)  # Stop following line
-        service.send("robobot/cmd/T0/servo", "1 200 200")
+        
+        ###service.send("robobot/cmd/T0/servo", "1 -400 200")
         print("Moving servo")
+        
+       
         pose.tripBreset()
         #timeStamp = pose.tripBtimePassed() 
         #service.send(service.topicCmd + "ti/rc","0.0 0.25")  # Turn left
@@ -119,13 +136,27 @@ def loop():
         state = 14  # Change state to turning left
       print(f"% --- state {state}, h = {pose.tripBh:.4f}, t={pose.tripBtimePassed():.3f}")
     elif state == 14:  # Turning left
-      if pose.tripBtimePassed() > 5: 
+      if pose.tripBtimePassed() > 3: 
         turns += 1  # Increment turn counter
-        service.send("robobot/cmd/T0/servo", "1 1000 200")  
+        
+        #print(edge.crossingLine)
+        #print(edge.crossingLineCnt)
+        #print(edge.edge_n)
+        
+        print(edge.position)
+        
+        ###service.send("robobot/cmd/T0/servo", "1 800 200")  
         print("Moving servo")
-        #service.send(service.topicCmd + "ti/rc","0.5 0")  # Set robot speed and turn rate
-        #pose.printPose()
-        #print("% Going straight")
+        
+        #gpio.set_value(20, 1)
+        #gpio.set_value(21, 0)
+      
+        #gpio.set_value(26, 1)
+        
+        # service.send(service.topicCmd + "ti/rc","0.5 0") #Command to start driving (in this case 0.5m/s, 0 degr)
+        
+        #gpio.set_value(19, 0)
+       
         pose.tripBreset()
         #timeStamp = pose.tripBtimePassed() 
         if turns < 3:
@@ -135,17 +166,23 @@ def loop():
         #service.send(service.topicCmd + "ti/rc","0 0")  # Stop for images
       #print(f"% --- state {state}, h = {pose.tripBh:.4f}, t={pose.tripBtimePassed():.3f}")
     elif state == 20:  # Image analysis
-      service.send("robobot/cmd/T0/servo", "1 5000 200")
-      #service.send(service.topicCmd + "t0/servo","1 1000 100") 
-      imageAnalysis(images == 2)  # Perform image analysis
+      
+      #gpio.set_value(20, 0)
+      #gpio.set_value(21, 0)
+        
+      #gpio.set_value(26, 0)
+      #gpio.set_value(19, 0)
+      #edge.lineControl(0, 0)  # Follow line at 0.25 m/s
+   
+      #imageAnalysis(images == 2)  # Perform image analysis
       images += 1  # Increment image counter
       # Blink LED
       if ledon:
         service.send(service.topicCmd + "T0/leds","16 0 64 0")  # Set LED to green
-        gpio.set_value(20, 1)  # Turn on GPIO pin 20
+        #gpio.set_value(20, 1)  # Turn on GPIO pin 20
       else:
         service.send(service.topicCmd + "T0/leds","16 0 30 30")  # Set LED to yellow
-        gpio.set_value(20, 0)  # Turn off GPIO pin 20
+        #gpio.set_value(20, 0)  # Turn off GPIO pin 20
       ledon = not ledon  # Toggle LED state
       # Check if finished
       if images >= 10 or (not cam.useCam) or stateTimePassed() > 20:
@@ -184,6 +221,7 @@ def loop():
 
 if __name__ == "__main__":
     print("% Starting")
+
     # where is the MQTT data server:
     service.setup('localhost') # localhost
     #service.setup('10.197.217.81') # Juniper
@@ -191,5 +229,5 @@ if __name__ == "__main__":
     #service.setup('10.197.218.172')
     if service.connected:
       loop()
-      service.terminate()
+      service.terminate() 
     print("% Main Terminated")

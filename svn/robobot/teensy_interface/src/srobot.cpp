@@ -79,9 +79,9 @@ void SRobot::setup(int teensyNumber)
     fprintf(logfile, "%% 5 \tBattery voltage (V)\n");
     fprintf(logfile, "%% 6 \tTeensy load (%%)\n");
     fprintf(logfile, "%% 7 \tBoard supply current (A)\n");
-    fprintf(logfile, "%% 8 \tUsed battery capacity (Wh) (if implemented)\n");
+    fprintf(logfile, "%% 8 \tUsed battery capacity (Wh) (never reset properly)\n");
     fprintf(logfile, "%% 9 \tShutdown request.\n");
-    fprintf(logfile, "%% 10 \tCPU temperature.\n");
+    fprintf(logfile, "%% 10 \tCPU temperature (Raspberry).\n");
     // fprintf(logfile, "%% 11 \tIP4 adresses.\n");
   }
   if (th1 == nullptr)
@@ -214,10 +214,10 @@ void SRobot::toLog()
   snprintf(s, MSL, "%d %d %d %.2f %.1f %.2f %.3f %d %.1f\n",
            idx, version, controlState, batteryVoltage,
            load, supplyCurrent, batteryUsedWh, shutdown_count, cpuTemp);
-  if (ini["mqtt"]["use"] == "true")
-  {
-    mqtt.publish(topicHbt.c_str(), s, hbtTime);
-  }
+  // if (ini["mqtt"]["use"] == "true")
+  // {
+  //   mqtt.publish(topicHbt.c_str(), s, hbtTime);
+  // }
   if (logfile != nullptr and not service.stop_logging)
   {
     fprintf(logfile, "%s %s", st, s);

@@ -53,7 +53,6 @@ void SCurrent::setup(int teensy_number)
   }
   //
   // mqtt
-  topicCurrent = ini["mqtt"]["system"] + ini["mqtt"]["function"] + "T" + std::to_string(tn) + "/current";
   toConsole = ini[ini_section]["print"] == "true";
   //
   int mpt = strtol(ini[ini_section]["interval_ms"].c_str(), nullptr, 10);
@@ -71,7 +70,8 @@ void SCurrent::setup(int teensy_number)
     fprintf(logfile, "%% Motor current for all motors (Teensy %d)\n", tn);
     fprintf(logfile, "%% 1 \tTime (sec)\n");
     fprintf(logfile, "%% 2-5 \tVoltage current (from Teensy) 1,2,(3,4) (Amps)\n");
-    fprintf(logfile, "%% 6 \tBoard current (Amps) (also in state log)\n");
+    fprintf(logfile, "%% 6 \tBoard current (Amps) (low pass filtered)\n");
+    fprintf(logfile, "%% 7 \tBoard current (Amps) (not filtered)\n");
   }
 }
 
@@ -89,14 +89,17 @@ bool SCurrent::decode(const char* msg, UTime & msgTime)
   if (strncmp(p1, "mca ", 4) == 0)
   { // motor current
     p1 += 4;
-    const char * p2 = p1;
     for (int i = 0; i < 5; i++)
       current[i] = strtof(p1, (char**)&p1);
     // save to log_encoder_pose
     toLog(msgTime);
-    if (ini["mqtt"]["use"] == "true")
-      // also publist as MQTT message
-      mqtt.publish(topicCurrent.c_str(), p2, msgTime);
+  }
+  else if (strncmp(p1, "sca ", 4) == 0)
+  { // motor current
+    p1 += 4;
+    supplyCurrent = strtof(p1, (char**)&p1);
+    // save to log_encoder_pose
+    toLog(msgTime);
   }
   else
     used = false;
@@ -107,9 +110,9 @@ void SCurrent::toLog(UTime & updt)
 {
   if (logfile != nullptr and not service.stop_logging)
   {
-    fprintf(logfile, "%lu.%04ld %.3f %.3f %.3f %.3f %.2f\n",
+    fprintf(logfile, "%lu.%04ld %.3f %.3f %.3f %.3f %.2f %.2f\n",
             updt.getSec(), updt.getMicrosec()/100,
-            current[0], current[1], current[2], current[3], robot[tn].supplyCurrent);
+            current[0], current[1], current[2], current[3], robot[tn].supplyCurrent, supplyCurrent);
   }
 }
 

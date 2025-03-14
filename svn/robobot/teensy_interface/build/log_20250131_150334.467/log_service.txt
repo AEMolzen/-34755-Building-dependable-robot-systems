@@ -1,3 +1,0 @@
-% Service logfile
-% 1 	Time (sec)
-% 2 	Message

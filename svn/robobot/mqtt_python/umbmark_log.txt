@@ -1,0 +1,10 @@
+UMBmark Test Log - Started at 2025-03-07 16:47:43.040005
+UMBmark Test - Side: 1.0, Direction: clockwise
+  Leg 1: Driving forward 1.0 meters
+  Leg 1: Turning cw to -1.557 rad
+  Leg 2: Driving forward 1.0 meters
+  Leg 2: Turning cw to 3.132 rad
+  Leg 3: Driving forward 1.0 meters
+  Leg 3: Turning cw to 1.561 rad
+  Leg 4: Driving forward 1.0 meters
+  Leg 4: Turning cw to -0.008 rad

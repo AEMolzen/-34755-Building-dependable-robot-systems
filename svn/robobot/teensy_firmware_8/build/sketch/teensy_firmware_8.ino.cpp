@@ -88,14 +88,18 @@ void loop ( void )
     if (service.isSampleTime())
     {
       service.updateSensors();
+      
       // advance mission
-      done1 = dbehave.tick();
+      //done1 = dbehave.tick();
+     
       if (done1)
         usb.send("%% finished demo 1\n");
       // implement mission actions
       service.updateActuators();
+      
       cnt++;
     }
+    
   }
 }
 

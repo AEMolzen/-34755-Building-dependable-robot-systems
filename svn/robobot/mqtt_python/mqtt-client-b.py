@@ -86,7 +86,7 @@ def loop():
         print("% Ready, press start button")
         service.send(service.topicCmd + "T0/leds", "16 30 30 0")
     
-    edge.lineControl(0, 0) 
+    edge.lineControl(0, 0)
     # Turn on or off LineControl. 
     # LineControl(velocity, center), e.g. LineControl(0,0) disables, LineControl(1,0) enables.
     

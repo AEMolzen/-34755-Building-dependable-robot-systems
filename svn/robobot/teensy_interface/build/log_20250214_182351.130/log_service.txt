@@ -1,7 +1,0 @@
-% Service logfile
-% 1 	Time (sec)
-% 2 	Message
-1739553831.1304 Setup finished OK=1
-1739555008.8174 Got power off from (teensy 1) Teensy (battery)
-1739555008.8180 Shutdown: robobot/cmd/shutdown 1739555008.8174 Teensy (battery)
-1739555011.7737 All terminated; closing logfile

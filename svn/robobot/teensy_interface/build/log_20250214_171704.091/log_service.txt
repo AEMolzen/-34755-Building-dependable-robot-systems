@@ -1,5 +1,0 @@
-% Service logfile
-% 1 	Time (sec)
-% 2 	Message
-1739549824.0912 Setup finished OK=1
-1739549828.2080 All terminated; closing logfile

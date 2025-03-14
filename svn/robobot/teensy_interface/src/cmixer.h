@@ -58,10 +58,11 @@ public:
    /**
     * are wheels commanded to run,
     * \returns true if commanded velocity is > 0 or turning */
-   bool areWheelsRunning()
+   bool shouldWheelsBeRunning()
    {
      return fabsf(linVel) > 0.001 or fabsf(turnrate) > 0.001;
    }
+
 
 public:
   /// Mixer update cnt

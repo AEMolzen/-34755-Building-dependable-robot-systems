@@ -112,8 +112,6 @@ bool SEdge::decode(const char* msg, UTime & msgTime)
       return false;
     // forward to mqtt
     updTime = msgTime;
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish((topic + "liv").c_str(), p1, msgTime);
     // get data
     for (int i = 0; i < 8; i++)
     {
@@ -121,29 +119,9 @@ bool SEdge::decode(const char* msg, UTime & msgTime)
     }
     toLogEnc();
   }
-  else if (strncmp(p1, "lip ", 4) == 0)
-  { // just publish - line sensor position (as extracted from Teensy)
-    p1 += 4;
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish((topic + "lip").c_str(), p1, msgTime);
-  }
-  else if (strncmp(p1, "liw ", 4) == 0)
-  { // just publish - white values
-    p1 += 4;
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish((topic + "liw").c_str(), p1, msgTime);
-  }
-  else if (strncmp(p1, "lib ", 4) == 0)
-  { // just publish - black values
-    p1 += 4;
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish((topic + "lib").c_str(), p1, msgTime);
-  }
   else if (strncmp(p1, "livn ", 5) == 0)
   { // just publish - normalized values
     p1 += 5;
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish((topic + "livn").c_str(), p1, msgTime);
     // get data
     for (int i = 0; i < 8; i++)
     {

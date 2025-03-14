@@ -1,4 +1,0 @@
-% Service logfile
-% 1 	Time (sec)
-% 2 	Message
-1740143523.8779 Setup finished OK=1

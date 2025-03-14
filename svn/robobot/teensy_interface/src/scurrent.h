@@ -50,6 +50,7 @@ protected:
 public:
   UTime updTime; // time of last control update
   float current[5] = {0}; // index 4 is system current
+  float supplyCurrent = 0; // less averaged than value in HBT
   int dataCnt = 0;
 
 private:

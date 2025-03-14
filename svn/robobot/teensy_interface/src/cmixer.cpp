@@ -33,6 +33,7 @@
 #include "uservice.h"
 // #include "csteering.h"
 #include "mjoy.h"
+#include "mvelocity.h"
 #include <stdlib.h>
 
 // create value
@@ -173,8 +174,9 @@ void CMixer::run()
       oldUpdCntManual = joy.updateCnt;
       upd = true;
     }
-    if (upd)
+    if (upd or updateTime.getTimePassed() > 0.5)
     { // use the new data
+      updateTime.now();
       if (manualOverride)
       {  // source is manual control
         linVel = joy.velocity;
@@ -212,16 +214,18 @@ void CMixer::run()
       // driveMotorXXXXX[1] is motor on that number (0..3)
       // driveMotorXXXXX[2] is additional motor or -1 for none
       //
-      if (fabsf(linVel) > 0.005 or fabsf(turnrate) > 0.005)
+      if (shouldWheelsBeRunning())
       {
-        if (motor[0].inRelax())
-          printf("# CMixer:: got out of relax (linvel=%g, turnrate=%g)\n", linVel, turnrate);
+        if (motor[0].inRelax() and updateTime.getSec() > 0)
+          printf("# CMixer:: %lu.%04ld got out of relax (linvel=%g, turnrate=%g)\n",
+                 updateTime.getSec(), updateTime.getMicrosec()/100, linVel, turnrate);
         motor[0].setRelax(false);
       }
-      else
-      {
+      else if (not mvel[0].areMotorsRunning())
+      { // motors has stopped, so relax
         if (not motor[0].inRelax())
-          printf("# CMixer:: got into relax (linvel=%g, turnrate=%g)\n", linVel, turnrate);
+          printf("# CMixer:: %lu.%04ld got into relax (linvel=%g, turnrate=%g)\n",
+                 updateTime.getSec(), updateTime.getMicrosec()/100, linVel, turnrate);
         motor[0].setRelax(true);
       }
       // left motor(s)
@@ -233,8 +237,7 @@ void CMixer::run()
       if (driveMotorRight[2] >= 0)
         motor[driveMotorRight[0]].desiredVelocity[driveMotorRight[2]] = v1; // m4
       //
-      updateTime.now();
-      if (updateCnt > 2)
+      if (updateCnt > 0)
         toLog();
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -247,7 +250,7 @@ void CMixer::setVelocity(float refLinearVelocity, float refCurvature)
   desiredLinVel = refLinearVelocity;
   desiredCurvature = refCurvature;
   autoUpdate = true;
-  //printf("# CMixer::setVelocity: vel=%.3f (m/s), turnrate=%.3f (rad/sec)\n", refLinearVelocity, refCurvature);
+  printf("# CMixer::setVelocity: vel=%.3f (m/s), turnrate=%.3f (rad/sec)\n", refLinearVelocity, refCurvature);
 }
 
 
@@ -278,16 +281,16 @@ void CMixer::toLog()
     return;
   if (logfile != nullptr and not service.stop_logging)
   { // add to log after update
-    fprintf(logfile, "%lu.%04ld %d %d %.3f %.3f %.3f %.3f\n",
+    fprintf(logfile, "%lu.%04ld %d %d %.3f %.3f %.3f %.3f %d\n",
             updateTime.getSec(), updateTime.getMicrosec()/100,
-            rcSource, manualOverride, linVel, turnrate, v0, v1
+            rcSource, manualOverride, linVel, turnrate, v0, v1, updateCnt
             );
   }
   if (toConsole)
   {
-    printf("%% CMixer: %lu.%04ld %d %d %.3f %.3f %.3f %.3f\n",
+    printf("%% CMixer: %lu.%04ld %d %d %.3f %.3f %.3f %.3f %d\n",
            updateTime.getSec(), updateTime.getMicrosec()/100,
-           rcSource, manualOverride, linVel, turnrate, v0, v1
+           rcSource, manualOverride, linVel, turnrate, v0, v1, updateCnt
            );
   }
 }

@@ -49,18 +49,14 @@ void SImu::setup(int teensyNumber)
     ini[ini1]["print_gyro"] = "false";
     ini[ini1]["print_acc"] = "false";
     // other IMU
-    ini[ini2]["use"] = "false";
-    ini[ini2]["interval_gyro_ms"] = "12";
-    ini[ini2]["interval_acc_ms"] = "12";
-    ini[ini2]["gyro_offset"] = "0 0 0";
-    ini[ini2]["log"] = "true";
-    ini[ini2]["print_gyro"] = "false";
-    ini[ini2]["print_acc"] = "false";
+    // ini[ini2]["use"] = "false";
+    // ini[ini2]["interval_gyro_ms"] = "12";
+    // ini[ini2]["interval_acc_ms"] = "12";
+    // ini[ini2]["gyro_offset"] = "0 0 0";
+    // ini[ini2]["log"] = "true";
+    // ini[ini2]["print_gyro"] = "false";
+    // ini[ini2]["print_acc"] = "false";
   }
-  topicAcc[0] = ini["mqtt"]["system"] + ini["mqtt"]["function"] + "T" + std::to_string(tn) + "/acc";
-  topicAcc[1] = ini["mqtt"]["system"] + ini["mqtt"]["function"] + "T" + std::to_string(tn) + "/acc2";
-  topicGyro[0] = ini["mqtt"]["system"] + ini["mqtt"]["function"] + "T" + std::to_string(tn) + "/gyro";
-  topicGyro[1] = ini["mqtt"]["system"] + ini["mqtt"]["function"] + "T" + std::to_string(tn) + "/gyro2";
   // use values and subscribe to source data
   // like teensy[x].send("sub pose 4\n");
   std::string s = "sub gyro " + ini[ini1]["interval_gyro_ms"] + "\n";
@@ -76,7 +72,7 @@ void SImu::setup(int teensyNumber)
   //
   toConsoleGyro[0] = ini[ini1]["print_gyro"] == "true";
   toConsoleAcc[0] = ini[ini1]["print_acc"] == "true";
-  if (ini[ini1]["log"] == "true" and logfileGyro[0] == nullptr)
+  if (ini[ini1]["log"] == "true")
   { // open logfile
     std::string fn = service.logPath + "log_t" + to_string(tn) + "_gyro_1.txt";
     logfileGyro[0] = fopen(fn.c_str(), "w");
@@ -150,22 +146,17 @@ bool SImu::decode(const char* msg, UTime & msgTime)
       p1 += 4;
     else
       return false;
-    const char * p2 = p1;
     float a[3];
     for (int i = 0; i < 3; i++)
       a[i] = strtof(p1, (char**)&p1);
-    int n = strtol(p1, (char**)&p1, 10);
+    // IMU 1 (pt. one only)
     int m = 0;
-    if (n != 1)
-      m = 1;
     updTimeAcc[m] = msgTime;
     for (int i = 0; i < 3; i++)
       acc[m][i] = a[i];
     updateAccCnt[m]++;
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish(topicAcc[m].c_str(), p2, msgTime);
     // save to log
-    toLog(true, n);
+    toLog(true, m);
   }
   else if (strncmp(p1, "gyro ", 5) == 0)
   {
@@ -173,16 +164,12 @@ bool SImu::decode(const char* msg, UTime & msgTime)
       p1 += 5;
     else
       return false;
-    const char * p2 = p1;
     // get x,y and z values
     float g[3];
     for (int i = 0; i < 3; i++)
       g[i] = strtof(p1, (char**)&p1);
-    // IMU number
-    int n = strtol(p1, (char**)&p1, 10);
+    // IMU number (there is one gyro only)
     int m = 0;
-    if (n != 1)
-      m = 1;
     updTimeGyro[m] = msgTime;
     for (int i = 0; i < 3; i++)
     {
@@ -190,10 +177,8 @@ bool SImu::decode(const char* msg, UTime & msgTime)
     }
     // notify users of a new update
     updateGyroCnt[m]++;
-    if (ini["mqtt"]["use"] == "true")
-      mqtt.publish(topicGyro[m].c_str(), p2, msgTime);
      // save to log (if requested)
-    toLog(false, n);
+    toLog(false, m);
     //
     if (inCalibration[m])
     { // Gyro calibration can be handled ambulant
@@ -209,13 +194,13 @@ bool SImu::decode(const char* msg, UTime & msgTime)
         const int MSL = 100;
         char s[MSL];
         snprintf(s, MSL, "%g %g %g", gyroOffset[m][0], gyroOffset[m][1], gyroOffset[m][2]);
-        if (n == 1)
+        if (m == 0)
           ini[ini1]["gyro_offset"] = s;
         else
           ini[ini2]["gyro_offset"] = s;
         inCalibration[m] = false;
         //
-        printf("# gyro %d calibration finished: %s\n", n, s);
+        printf("# gyro %d calibration finished: %s\n", m, s);
       }
     }
   }
@@ -228,9 +213,7 @@ void SImu::toLog(bool accChanged, int imuIdx)
 {
   if (service.stop)
     return;
-  int m = 0;
-  if (imuIdx != 1)
-    m = 1;
+  int m = imuIdx;
   if (accChanged)
   { // accelerometer
     if (logfileAcc[m] != nullptr and not service.stop_logging)
